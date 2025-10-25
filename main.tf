@@ -35,6 +35,54 @@ resource "helm_release" "argocd" {
   repository = "https://argoproj.github.io/argo-helm"
   chart      = "argo-cd"
   namespace  = kubernetes_namespace.argo-ns.metadata[0].name
+  version    = "5.46.8"
+  timeout    = 600
+
+  values = [
+    <<-EOT
+    controller:
+      replicas: 1
+      resources:
+        limits:
+          cpu: 500m
+          memory: 512Mi
+        requests:
+          cpu: 250m
+          memory: 256Mi
+    
+    server:
+      replicas: 1
+      resources:
+        limits:
+          cpu: 500m
+          memory: 512Mi
+        requests:
+          cpu: 250m
+          memory: 256Mi
+    
+    repoServer:
+      replicas: 1
+      resources:
+        limits:
+          cpu: 500m
+          memory: 512Mi
+        requests:
+          cpu: 250m
+          memory: 256Mi
+    
+    redis:
+      enabled: false
+    
+    dex:
+      enabled: false
+    
+    notifications:
+      enabled: false
+    
+    applicationSet:
+      enabled: false
+    EOT
+  ]
 
   # We are going to access the console with a port forwarded connection, so we'll disable TLS.
   # This allow us to avoid the self-signed certificate warning for localhosts.
