@@ -31,12 +31,14 @@ resource "kubernetes_namespace" "argo-ns" {
 }
 
 resource "helm_release" "argocd" {
-  name       = "msur"
-  repository = "https://argoproj.github.io/argo-helm"
-  chart      = "argo-cd"
-  namespace  = kubernetes_namespace.argo-ns.metadata[0].name
-  version    = "5.46.8"
-  timeout    = 600
+  name          = "msur"
+  repository    = "https://argoproj.github.io/argo-helm"
+  chart         = "argo-cd"
+  namespace     = kubernetes_namespace.argo-ns.metadata[0].name
+  version       = "5.46.8"
+  timeout       = 2400 # Increase to 20 minutes
+  wait          = true
+  wait_for_jobs = true
 
   values = [
     <<-EOT
